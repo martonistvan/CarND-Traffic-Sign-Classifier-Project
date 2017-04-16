@@ -45,8 +45,10 @@ for visualization purposes I did 2 things:
 
 ####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-As I am using the color images for training purposes I did not convert the pictures!
-I only suffled training data set and set parameters like EPOCHS and BATCH_SIZE.
+First of all I am using the color images for training purposes I did not convert the pictures!
+
+As preprocessing I normalized the training dataset to have zero mean so for the optimizier it is easier to compute.
+By using normalized dataset we avoide too big or too small values in the calculation of loss function that can cause numeric issues and the prediction can be more accurate!
 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
@@ -141,13 +143,14 @@ To train the model, I:
 
 I tried several scenarios to train the model and get at least 0.93 accuracy on the validation set.
 I applied the following parameters:
-    - EPOCHS = 60
+    - EPOCHS = 30
     - BATCH_SIZE = 128
     - RATE = 0.002
     
- with these parameters I could reach 0.931 accuracy in epoch 55 (see attached HTML).
+with these parameters I could reach 0.931 accuracy in epoch 23 (see attached HTML).
+By using normalized dataset during training the accuracy of each epoch is higher than in case of training with non-normalized data.
  
-Test set accuracy: 0.902
+Test set accuracy: 0.886
 
 I used LeNet architecture to train the model.
  
@@ -166,6 +169,16 @@ I found the following traffic signs on the web (images are also uploaded to gith
     - 18: General Caution
     - 28: Children crossing
 
+--- Added as requested by the reviewer
+
+Images have different sizes (see cell 11).
+The traffic signs on the pictures are clearly visible, bright and identifiable. Edges of Traffic signs are sharp.
+On some of the pictures there are objects in background (like trees) that can have effect on the traffic sign identification.
+Apart from that it should not be difficult to classify the traffic signs.
+I expect a high accuracy rate
+
+------------------------
+
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
@@ -173,18 +186,16 @@ Here are the results of the prediction:
 Image                                           Prediction
 ---------------------------------------------------------------------------------------
 speed limit 30 km/h                             speed limit 30 km/h
-speed limit 60 km/h                             Speed limit (80km/h)
+speed limit 60 km/h                             speed limit 60 km/h
 Right-of-way at the next intersection           Right-of-way at the next intersection
 Priority road                                   Priority road
 Yield                                           No passing for vehicles over 3.5 metric tons
 Stop                                            Stop
 General Caution                                 General Caution
-Children crossing                               Road work
+Children crossing                               Children crossing
 
 
-The model was able to correctly guess 5 of the 8 traffic signs, which gives an accuracy of 62.5%. This compares favorably to the accuracy on the test set of 0.902
-
-Based on my tests with different parameter values the prediction on my test images worked better when training accuracy was below 0.900 (between 0.850-0.900).
+The model was able to correctly guess 7 of the 8 traffic signs, which gives an accuracy of 87.5%. This compares favorably to the accuracy on the test set of 0.886
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
@@ -192,17 +203,20 @@ The code for making predictions on my final model is located in the 22nd cell of
 
 The top five soft max probabilities were
 
-| Probability         	|     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| 1.00					| Right-of-way at the next intersection											|
-| 1.00         			| speed limit 30 km/h   									| 
-| 3.33905126e-11 (3rd)	| speed limit 60 km/h 										|
-| 1.00				    | Stop      							|
-| 3.89943889e-05 (2nd)  | Children crossing      							|
-| 1.00				    | General Caution      							|
-| 1.00	      			| Priority road					 				|
-| 4.72048082e-37 (3rd)  | Yield      							|
+Actual Label	| Probability			|		Prediction									| 
+				|:---------------------:|:-------------------------------------------------:| 
+1				| 1.00					| 1 - speed limit 30 km/h							|
+3				| 1.00					| 3 - speed limit 60 km/h   						| 
+11				| 1.00					| 11 - Right-of-way at the next intersection		|
+12				| 1.00					| 12 - Priority road      							|
+13				| 1.00					| 10 - No passing for vehicles over 3.5 metric tons	|
+14				| 1.00					| 14 - Stop											|
+18				| 1.00					| 18 - General Caution				 				|
+28				| 1.00					| 28 - Children crossing							|
 
+The model is pretty sure about the prediciton in case of each traffic sign. Softmax probability is "1" in each cases.
+Although the model incorrectly identifies "Yield" traffic sign. Instead of label 13 it predicts 10 (No passing for vehicles over 3.5 metric tons).
+The rest of the top 5 prediction values are zero.
 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
